@@ -23,13 +23,16 @@ body {
   font-family: var(--font-stack);
   margin: 0;
   padding: 2rem;
+  padding-top: 1rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* Horizontal centering */
   align-items: center;
 }
-
+#title {
+  margin-top: 0;
+}
 #controlContainer {
   display: flex;
   flex-direction: column;
@@ -128,15 +131,25 @@ button#download:hover {
 
 
 @media screen and (max-width: 600px) {
+  body {
+    padding: 2rem 0.8rem;
+    padding-top: 1rem;
+  }
+
+  #title {
+    margin-top: 0;
+  }
 
   #controlContainer {
     width: 90%;
     min-width: 90%;
     align-content: space-around;
   }
+
   #controlContainer > * {
-    width: 90%;  /* All direct children of controlContainer will have 75% width */
+    width: 90%; /* All direct children of controlContainer will have 75% width */
   }
+
   .file-label {
     font-size: 1rem;
   }

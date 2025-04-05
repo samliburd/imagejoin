@@ -4,11 +4,8 @@ const ctx = canvas.getContext("2d");
 const uploadInput = document.getElementById("upload");
 const checkbox = document.getElementById("scaleCheckbox");
 const downloadButton = document.getElementById("download");
-const width = document.getElementById("width");
-const width2 = document.getElementById("width2");
 const controlContainer = document.getElementById("controlContainer");
 
-width2.innerText = `Control width: ${controlContainer.offsetWidth}`
 
 let loadedImages = [];
 
@@ -50,7 +47,6 @@ const drawToCanvas = () => {
 
   setCanvasDimensions(maxWidth, newHeights);
   drawImagesOnCanvas(loadedImages, scaleFactors, maxWidth, newHeights);
-  width.innerText = `Canvas width: ${canvas.offsetWidth}\nCanvas container width: ${canvasContainer.offsetWidth}`;
 };
 
 // Get max or min width based on checkbox state
