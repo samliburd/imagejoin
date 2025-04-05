@@ -38,7 +38,7 @@ body {
 #controlContainer {
   display: flex;
   flex-direction: column;
-  width: fit-content; /* This allows controlContainer to size based on its content */
+  width: fit-content(100%); /* This allows controlContainer to size based on its content */
   /*width: 90%;*/
   padding: 1rem 0.8rem;
   /*max-width: 100%; !* Ensures it doesn't exceed the screen width *!*/
@@ -51,7 +51,10 @@ body {
   align-items: center; /* Centers the content horizontally */
 }
 
-
+#controlContainer > * {
+  width: 90%; /* All direct children of controlContainer will have 75% width */
+  padding: 0 1rem;
+}
 .file-upload {
   display: flex;
   align-items: center;
@@ -88,6 +91,22 @@ input[type="checkbox"] {
   accent-color: var(--button-bg);
   transform: scale(1.2);
   margin-right: 0.5rem;
+}
+
+.filename-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Optional: align items vertically centered */
+}
+
+.filename-input .label-text {
+  width: auto; /* Allow the label-text to take up as much space as it needs */
+  margin-right: 10px; /* Optional: add space between label-text and input */
+}
+
+.filename-input input {
+  flex-grow: 1; /* Makes the input take up the remaining space */
+  /*width: 0; !* Ensure it doesn't overflow *!*/
 }
 
 label {
@@ -153,10 +172,12 @@ button#download:hover {
   #controlContainer > * {
     width: 90%; /* All direct children of controlContainer will have 75% width */
   }
-.file-upload {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
+
+  .file-upload {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
   .file-upload:focus {
     outline: none;
   }

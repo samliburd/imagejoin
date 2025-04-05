@@ -4,12 +4,15 @@ const ctx = canvas.getContext("2d");
 const uploadInput = document.getElementById("upload");
 const checkbox = document.getElementById("scaleCheckbox");
 const downloadButton = document.getElementById("download");
-const controlContainer = document.getElementById("controlContainer");
-
 
 let loadedImages = [];
 
-canvasContainer.classList.add("hidden")
+// Visibility control functions
+const showCanvasContainer = () => canvasContainer.classList.remove("hidden");
+const hideCanvasContainer = () => canvasContainer.classList.add("hidden");
+
+// Initialize with hidden container
+hideCanvasContainer();
 
 // Utility: Load an image from a File object (via FileReader)
 const loadImageFromFile = (file) => {
@@ -29,17 +32,30 @@ const loadImageFromFile = (file) => {
 // Load images and draw to canvas
 const loadAndDrawImages = async (files) => {
   try {
+    hideCanvasContainer(); // Hide while loading
+
     loadedImages = await Promise.all(Array.from(files).map(loadImageFromFile));
-    drawToCanvas();
+
+    if (loadedImages.length > 0) {
+      drawToCanvas();
+    } else {
+      hideCanvasContainer();
+    }
   } catch (error) {
     console.error(error);
+    hideCanvasContainer();
+    // Optional: Show error message to user
   }
 };
 
 // Redraw canvas based on scale setting
 const drawToCanvas = () => {
-  if (loadedImages.length === 0) return;
-  canvasContainer.classList.remove("hidden")
+  if (loadedImages.length === 0) {
+    hideCanvasContainer();
+    return;
+  }
+
+  showCanvasContainer();
 
   const maxWidth = getMaxWidth(loadedImages);
   const scaleFactors = getScaleFactors(loadedImages, maxWidth);
@@ -87,10 +103,11 @@ uploadInput.addEventListener("change", (e) => {
 });
 
 const downloadImage = () => {
+  const filename = document.getElementById("filename").value.trim() || "joinedimage"; // Default to "canvas" if input is empty
   const imageData = canvas.toDataURL("image/jpeg", 0.92); // 92% quality JPEG
   const link = document.createElement("a");
   link.href = imageData;
-  link.download = "canvas.jpg";
+  link.download = `${filename}.jpg`; // Set download filename to the value of the input box
   link.click();
 };
 
