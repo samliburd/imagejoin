@@ -1,3 +1,4 @@
+// DOM references
 const canvas = document.getElementById("canvas");
 const canvasContainer = document.getElementById("canvasContainer");
 const ctx = canvas.getContext("2d");
@@ -8,6 +9,7 @@ const downloadButton = document.getElementById("download");
 const imageListContainer = document.getElementById("imageListContainer");
 const imageList = document.getElementById("imageList");
 
+// Constants
 const TEST_IMAGES = [
   "testimg/1.jpg",
   "testimg/2.png",
@@ -16,21 +18,20 @@ const TEST_IMAGES = [
   // "testimg/triangle.png"
 ];
 
+// State
 let loadedImages = [];
 let draggedItem = null;
 let draggedIndex = null;
-let touchStartY = 0;
-let touchOffsetY = 0;
 
-// Visibility control functions
+// Visibility control
 const showCanvasContainer = () => canvasContainer.classList.remove("hidden");
 const hideCanvasContainer = () => canvasContainer.classList.add("hidden");
 
-// Initialize with hidden containers
+// Init state
 hideCanvasContainer();
 imageListContainer.classList.add("hidden");
 
-// Utility: Load an image from a File object (via FileReader)
+// Utility: Load image from file
 const loadImageFromFile = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -45,7 +46,34 @@ const loadImageFromFile = (file) => {
   });
 };
 
-// Load images and draw to canvas
+// Utility: Load test images
+const loadTestImages = async () => {
+  try {
+    hideCanvasContainer();
+    imageListContainer.classList.add("hidden");
+    imageList.innerHTML = "";
+
+    loadedImages = await Promise.all(
+      TEST_IMAGES.map((src) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(`Failed to load image: ${src}`);
+          img.src = src;
+        });
+      })
+    );
+
+    if (loadedImages.length > 0) {
+      createImageThumbnails();
+      drawToCanvas();
+    }
+  } catch (err) {
+    console.error("Error loading test images:", err);
+  }
+};
+
+// Load and draw images from input
 const loadAndDrawImages = async (files) => {
   try {
     hideCanvasContainer();
@@ -78,17 +106,17 @@ const createImageThumbnails = () => {
 
     const upArrow = document.createElement("button");
     upArrow.className = "up-arrow";
-    upArrow.innerHTML = "&uarr;"
+    upArrow.innerHTML = "&uarr;";
     upArrow.addEventListener("click", () => {
-      console.log(e)
-    })
+      console.log(e);
+    });
 
     const downArrow = document.createElement("button");
     downArrow.className = "down-arrow";
-    downArrow.innerHTML = "&darr;"
+    downArrow.innerHTML = "&darr;";
     downArrow.addEventListener("click", (e) => {
-      console.log(e)
-    })
+      console.log(e);
+    });
 
     const imgPreview = document.createElement("img");
     imgPreview.src = img.src;
@@ -103,14 +131,13 @@ const createImageThumbnails = () => {
     thumbnail.appendChild(downArrow);
     imageList.appendChild(thumbnail);
 
-    // Add drag events
     thumbnail.addEventListener("dragstart", handleDragStart);
     thumbnail.addEventListener("dragover", handleDragOver);
     thumbnail.addEventListener("dragend", handleDragEnd);
   });
 };
 
-// Desktop drag handlers
+// Drag handlers
 const handleDragStart = (e) => {
   draggedItem = e.target.closest(".image-thumbnail");
   draggedIndex = parseInt(draggedItem.dataset.index);
@@ -143,24 +170,21 @@ const handleDragEnd = () => {
   }
 };
 
-
-// Update the loadedImages array when order changes
+// Update image order after drag
 const updateImageOrder = () => {
-  const newOrder = Array.from(imageList.children).map(thumb =>
+  const newOrder = Array.from(imageList.children).map((thumb) =>
     loadedImages[parseInt(thumb.dataset.index)]
   );
   loadedImages = newOrder;
 
-  // Update the data-index attributes
   imageList.querySelectorAll(".image-thumbnail").forEach((thumb, index) => {
     thumb.dataset.index = index;
   });
 
-  // Redraw canvas with new order
   drawToCanvas();
 };
 
-// Redraw canvas based on scale setting
+// Drawing functions
 const drawToCanvas = () => {
   if (loadedImages.length === 0) {
     hideCanvasContainer();
@@ -177,27 +201,22 @@ const drawToCanvas = () => {
   drawImagesOnCanvas(loadedImages, scaleFactors, maxWidth, newHeights);
 };
 
-// Get max or min width based on checkbox state
 const getMaxWidth = (images) =>
   checkbox.checked
     ? Math.max(...images.map((img) => img.width))
     : Math.min(...images.map((img) => img.width));
 
-// Scale factors per image
 const getScaleFactors = (images, baseWidth) =>
   images.map((img) => baseWidth / img.width);
 
-// New image heights based on scale
 const calculateNewHeights = (images, scaleFactors) =>
   images.map((img, i) => img.height * scaleFactors[i]);
 
-// Set canvas dimensions
 const setCanvasDimensions = (width, heights) => {
   canvas.width = width;
   canvas.height = heights.reduce((acc, h) => acc + h, 0);
 };
 
-// Draw images on canvas
 const drawImagesOnCanvas = (images, scaleFactors, width, heights) => {
   let yOffset = 0;
   images.forEach((img, i) => {
@@ -206,55 +225,7 @@ const drawImagesOnCanvas = (images, scaleFactors, width, heights) => {
   });
 };
 
-// Event: File upload
-uploadInput.addEventListener("change", (e) => {
-  const files = e.target.files;
-  if (files.length) {
-    loadAndDrawImages(files);
-  }
-});
-
-const loadTestImages = async () => {
-  try {
-    hideCanvasContainer();
-    imageListContainer.classList.add("hidden");
-    imageList.innerHTML = "";
-
-    loadedImages = await Promise.all(
-      TEST_IMAGES.map((src) => {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => resolve(img);
-          img.onerror = () => reject(`Failed to load image: ${src}`);
-          img.src = src;
-        });
-      })
-    );
-
-    if (loadedImages.length > 0) {
-      createImageThumbnails();
-      drawToCanvas();
-    }
-  } catch (err) {
-    console.error("Error loading test images:", err);
-  }
-};
-debug.addEventListener("change", (e) => {
-  if (e.target.checked) {
-    loadTestImages();
-  } else {
-    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-    hideCanvasContainer();
-    imageListContainer.classList.add("hidden");
-    imageList.innerHTML = "";
-    loadedImages = [];
-  }
-});
-
-// Trigger test image loading on page load if debug is checked
-if (debug.checked) {
-  loadTestImages();
-}
+// Download logic
 const downloadImage = () => {
   const filename = document.getElementById("filename").value.trim() || "joinedimage";
   const imageData = canvas.toDataURL("image/jpeg", 0.92);
@@ -264,8 +235,31 @@ const downloadImage = () => {
   link.click();
 };
 
-// Event: Download button click
+// Event Listeners
+uploadInput.addEventListener("change", (e) => {
+  const files = e.target.files;
+  if (files.length) {
+    loadAndDrawImages(files);
+  }
+});
+
+checkbox.addEventListener("change", drawToCanvas);
+
 downloadButton.addEventListener("click", downloadImage);
 
-// Event: Scale checkbox changed
-checkbox.addEventListener("change", drawToCanvas);
+debug.addEventListener("change", (e) => {
+  if (e.target.checked) {
+    loadTestImages();
+  } else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hideCanvasContainer();
+    imageListContainer.classList.add("hidden");
+    imageList.innerHTML = "";
+    loadedImages = [];
+  }
+});
+
+// Load test images if debug is already checked
+if (debug.checked) {
+  loadTestImages();
+}
