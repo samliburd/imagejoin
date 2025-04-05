@@ -3,9 +3,18 @@ const canvasContainer = document.getElementById("canvasContainer");
 const ctx = canvas.getContext("2d");
 const uploadInput = document.getElementById("upload");
 const checkbox = document.getElementById("scaleCheckbox");
+const debug = document.getElementById("debug");
 const downloadButton = document.getElementById("download");
 const imageListContainer = document.getElementById("imageListContainer");
 const imageList = document.getElementById("imageList");
+
+const TEST_IMAGES = [
+  "testimg/1.jpg",
+  "testimg/2.png",
+  "testimg/rect.png",
+  // "testimg/rect2.png",
+  // "testimg/triangle.png"
+];
 
 let loadedImages = [];
 let draggedItem = null;
@@ -71,6 +80,7 @@ const createImageThumbnails = () => {
     imgPreview.src = img.src;
 
     const label = document.createElement("span");
+    label.className = "thumbnail-label";
     label.textContent = `Image ${index + 1}`;
 
     thumbnail.appendChild(imgPreview);
@@ -81,8 +91,8 @@ const createImageThumbnails = () => {
     thumbnail.addEventListener("dragstart", handleDragStart);
     thumbnail.addEventListener("dragover", handleDragOver);
     thumbnail.addEventListener("dragend", handleDragEnd);
-    thumbnail.addEventListener("touchstart", handleTouchStart, { passive: false });
-    thumbnail.addEventListener("touchmove", handleTouchMove, { passive: false });
+    thumbnail.addEventListener("touchstart", handleTouchStart, {passive: false});
+    thumbnail.addEventListener("touchmove", handleTouchMove, {passive: false});
     thumbnail.addEventListener("touchend", handleTouchEnd);
   });
 };
@@ -124,10 +134,26 @@ const handleDragEnd = () => {
 const handleTouchStart = (e) => {
   e.preventDefault();
   draggedItem = e.target.closest(".image-thumbnail");
+  if (!draggedItem) return;
+
   draggedIndex = parseInt(draggedItem.dataset.index);
   draggedItem.classList.add("dragging");
+
+  // Get initial position relative to viewport
+  const rect = draggedItem.getBoundingClientRect();
   touchStartY = e.touches[0].clientY;
-  touchOffsetY = touchStartY - draggedItem.getBoundingClientRect().top;
+  // Calculate offset from touch to element top (viewport coordinates)
+  touchOffsetY = touchStartY - rect.top;
+
+  // Store original position (relative to parent)
+  const parentRect = imageList.getBoundingClientRect();
+  draggedItem._originalTop = rect.top - parentRect.top;
+
+  // Prepare for dragging
+  draggedItem.style.position = "relative";
+  draggedItem.style.top = `${draggedItem._originalTop}px`;
+  draggedItem.style.zIndex = "1000";
+  draggedItem.style.transition = "none";
 };
 
 const handleTouchMove = (e) => {
@@ -135,24 +161,31 @@ const handleTouchMove = (e) => {
   if (!draggedItem) return;
 
   const y = e.touches[0].clientY;
-  draggedItem.style.position = "relative";
-  draggedItem.style.top = `${y - touchOffsetY}px`;
+  const parentRect = imageList.getBoundingClientRect();
 
-  const thumbnails = Array.from(imageList.children);
-  const currentPos = y;
+  // Calculate new top position relative to parent
+  const newTop = (y - parentRect.top) - touchOffsetY;
 
+  // Update position
+  draggedItem.style.top = `${newTop}px`;
+
+  // Get all thumbnails excluding the dragged one
+  const thumbnails = Array.from(imageList.children).filter(thumb => thumb !== draggedItem);
+
+  // Find insertion point
   for (let i = 0; i < thumbnails.length; i++) {
-    if (thumbnails[i] === draggedItem) continue;
+    const thumb = thumbnails[i];
+    const thumbRect = thumb.getBoundingClientRect();
+    const thumbMiddle = thumbRect.top + thumbRect.height / 2;
 
-    const rect = thumbnails[i].getBoundingClientRect();
-    const middle = rect.top + rect.height / 2;
-
-    if (currentPos < middle && draggedIndex > i) {
-      imageList.insertBefore(draggedItem, thumbnails[i]);
-      updateImageOrder();
-      break;
-    } else if (currentPos > middle && draggedIndex < i) {
-      imageList.insertBefore(draggedItem, thumbnails[i].nextSibling);
+    if (y < thumbMiddle) {
+      if (i === 0 || y > thumbnails[i-1].getBoundingClientRect().bottom) {
+        imageList.insertBefore(draggedItem, thumb);
+        updateImageOrder();
+        break;
+      }
+    } else if (i === thumbnails.length - 1 && y > thumbRect.bottom) {
+      imageList.appendChild(draggedItem);
       updateImageOrder();
       break;
     }
@@ -160,14 +193,19 @@ const handleTouchMove = (e) => {
 };
 
 const handleTouchEnd = () => {
-  if (draggedItem) {
-    draggedItem.classList.remove("dragging");
-    draggedItem.style.position = "";
-    draggedItem.style.top = "";
-    draggedItem = null;
-  }
-};
+  if (!draggedItem) return;
 
+  // Snap to final position
+  draggedItem.style.top = "0";
+  draggedItem.style.position = "";
+  draggedItem.style.zIndex = "";
+  draggedItem.style.transition = "";
+
+  setTimeout(() => {
+    draggedItem.classList.remove("dragging");
+    draggedItem = null;
+  }, 50);
+};
 // Update the loadedImages array when order changes
 const updateImageOrder = () => {
   const newOrder = Array.from(imageList.children).map(thumb =>
@@ -238,6 +276,47 @@ uploadInput.addEventListener("change", (e) => {
   }
 });
 
+const loadTestImages = async () => {
+  try {
+    hideCanvasContainer();
+    imageListContainer.classList.add("hidden");
+    imageList.innerHTML = "";
+
+    loadedImages = await Promise.all(
+      TEST_IMAGES.map((src) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(`Failed to load image: ${src}`);
+          img.src = src;
+        });
+      })
+    );
+
+    if (loadedImages.length > 0) {
+      createImageThumbnails();
+      drawToCanvas();
+    }
+  } catch (err) {
+    console.error("Error loading test images:", err);
+  }
+};
+debug.addEventListener("change", (e) => {
+  if (e.target.checked) {
+    loadTestImages();
+  } else {
+    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+    hideCanvasContainer();
+    imageListContainer.classList.add("hidden");
+    imageList.innerHTML = "";
+    loadedImages = [];
+  }
+});
+
+// Trigger test image loading on page load if debug is checked
+if (debug.checked) {
+  loadTestImages();
+}
 const downloadImage = () => {
   const filename = document.getElementById("filename").value.trim() || "joinedimage";
   const imageData = canvas.toDataURL("image/jpeg", 0.92);
