@@ -25,11 +25,24 @@
 <body>
 
 <!-- Add your site or application content here -->
-<label for="scaleCheckbox">Resize to largest dimension</label><input type="checkbox" name="scaleCheckbox"
-                                                                     id="scaleCheckbox" checked>
-<div class="canvas-container">
+<div id="controlContainer">
+  <label class="file-upload">
+    <input type="file" name="upload" id="upload" multiple hidden>
+    <span class="file-btn">Choose Files</span>
+    <span class="file-label" id="fileLabel">No files chosen</span>
+  </label>
+
+  <div id="checkboxContainer"><label for="scaleCheckbox">Resize to largest dimension</label>
+    <input type="checkbox" name="scaleCheckbox" id="scaleCheckbox" checked></div>
+
+
+  <button id="download">Download image</button>
+</div>
+<div id="canvasContainer">
   <canvas id="canvas"></canvas>
 </div>
+<p id="width">Hello</p>
+<p id="width2">Hi</p>
 <script src="js/app.js"></script>
 
 </body>

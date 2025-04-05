@@ -1,66 +1,105 @@
 const canvas = document.getElementById("canvas");
+const canvasContainer = document.getElementById("canvasContainer");
 const ctx = canvas.getContext("2d");
-const images = ["img/1.jpg", "img/2.png", "img/rect2.png"];
-
+const uploadInput = document.getElementById("upload");
 const checkbox = document.getElementById("scaleCheckbox");
+const downloadButton = document.getElementById("download");
+const width = document.getElementById("width");
+const width2 = document.getElementById("width2");
+const controlContainer = document.getElementById("controlContainer");
 
-// Utility function to load images
-const loadImage = (src) => {
+width2.innerText = `Control width: ${controlContainer.offsetWidth}`
+
+let loadedImages = [];
+
+canvasContainer.classList.add("hidden")
+
+// Utility: Load an image from a File object (via FileReader)
+const loadImageFromFile = (file) => {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(`Failed to load image: ${src}`);
-    img.src = src;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(`Failed to load image: ${file.name}`);
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(`Failed to read file: ${file.name}`);
+    reader.readAsDataURL(file);
   });
 };
 
-// Load all images and render them on the canvas
-const loadAllImages = async () => {
+// Load images and draw to canvas
+const loadAndDrawImages = async (files) => {
   try {
-    const loadedImages = await Promise.all(images.map(loadImage));
-    const maxWidth = getMaxWidth(loadedImages);  // Get either max or min width based on checkbox
-    const scaleFactors = getScaleFactors(loadedImages, maxWidth);
-    const newHeights = calculateNewHeights(loadedImages, scaleFactors);
-
-    setCanvasDimensions(maxWidth, newHeights);
-    drawImagesOnCanvas(loadedImages, scaleFactors, maxWidth, newHeights);
+    loadedImages = await Promise.all(Array.from(files).map(loadImageFromFile));
+    drawToCanvas();
   } catch (error) {
     console.error(error);
   }
 };
 
-// Get the max or min width of all images based on the checkbox state
-const getMaxWidth = (images) => checkbox.checked ? Math.min(...images.map(img => img.width)) : Math.max(...images.map(img => img.width));
+// Redraw canvas based on scale setting
+const drawToCanvas = () => {
+  if (loadedImages.length === 0) return;
+  canvasContainer.classList.remove("hidden")
 
-// Get scale factors for each image based on max width
-const getScaleFactors = (images, maxWidth) => {
-  return images.map(img => maxWidth / img.width);
+  const maxWidth = getMaxWidth(loadedImages);
+  const scaleFactors = getScaleFactors(loadedImages, maxWidth);
+  const newHeights = calculateNewHeights(loadedImages, scaleFactors);
+
+  setCanvasDimensions(maxWidth, newHeights);
+  drawImagesOnCanvas(loadedImages, scaleFactors, maxWidth, newHeights);
+  width.innerText = `Canvas width: ${canvas.offsetWidth}\nCanvas container width: ${canvasContainer.offsetWidth}`;
 };
 
-// Calculate new heights for each image based on scale factors
-const calculateNewHeights = (images, scaleFactors) => {
-  return images.map((img, index) => img.height * scaleFactors[index]);
+// Get max or min width based on checkbox state
+const getMaxWidth = (images) =>
+  checkbox.checked
+    ? Math.max(...images.map((img) => img.width))
+    : Math.min(...images.map((img) => img.width));
+
+// Scale factors per image
+const getScaleFactors = (images, baseWidth) =>
+  images.map((img) => baseWidth / img.width);
+
+// New image heights based on scale
+const calculateNewHeights = (images, scaleFactors) =>
+  images.map((img, i) => img.height * scaleFactors[i]);
+
+// Set canvas dimensions
+const setCanvasDimensions = (width, heights) => {
+  canvas.width = width;
+  canvas.height = heights.reduce((acc, h) => acc + h, 0);
 };
 
-// Set the canvas dimensions based on the images
-const setCanvasDimensions = (maxWidth, newHeights) => {
-  canvas.width = maxWidth;
-  canvas.height = newHeights.reduce((acc, height) => acc + height, 0);
-};
-
-// Draw all images on the canvas with appropriate scale factors and y-offsets
-const drawImagesOnCanvas = (images, scaleFactors, maxWidth, newHeights) => {
+// Draw images on canvas
+const drawImagesOnCanvas = (images, scaleFactors, width, heights) => {
   let yOffset = 0;
-  images.forEach((img, index) => {
-    ctx.drawImage(img, 0, yOffset, maxWidth, newHeights[index]);
-    yOffset += newHeights[index]; // Update yOffset for the next image
+  images.forEach((img, i) => {
+    ctx.drawImage(img, 0, yOffset, width, heights[i]);
+    yOffset += heights[i];
   });
 };
 
-// Start loading the images
-loadAllImages();
-
-// Event listener for checkbox state change
-checkbox.addEventListener("change", () => {
-  loadAllImages();  // Redraw the canvas when the checkbox state changes
+// Event: File upload
+uploadInput.addEventListener("change", (e) => {
+  const files = e.target.files;
+  if (files.length) {
+    loadAndDrawImages(files);
+  }
 });
+
+const downloadImage = () => {
+  const imageData = canvas.toDataURL("image/jpeg", 0.92); // 92% quality JPEG
+  const link = document.createElement("a");
+  link.href = imageData;
+  link.download = "canvas.jpg";
+  link.click();
+};
+
+// Event: Download button click
+downloadButton.addEventListener("click", downloadImage);
+
+// Event: Scale checkbox changed
+checkbox.addEventListener("change", drawToCanvas);
