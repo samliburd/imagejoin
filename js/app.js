@@ -76,6 +76,20 @@ const createImageThumbnails = () => {
     thumbnail.draggable = true;
     thumbnail.dataset.index = index;
 
+    const upArrow = document.createElement("button");
+    upArrow.className = "up-arrow";
+    upArrow.innerHTML = "&uarr;"
+    upArrow.addEventListener("click", () => {
+      console.log(e)
+    })
+
+    const downArrow = document.createElement("button");
+    downArrow.className = "down-arrow";
+    downArrow.innerHTML = "&darr;"
+    downArrow.addEventListener("click", (e) => {
+      console.log(e)
+    })
+
     const imgPreview = document.createElement("img");
     imgPreview.src = img.src;
 
@@ -83,17 +97,16 @@ const createImageThumbnails = () => {
     label.className = "thumbnail-label";
     label.textContent = `Image ${index + 1}`;
 
+    thumbnail.appendChild(upArrow);
     thumbnail.appendChild(imgPreview);
     thumbnail.appendChild(label);
+    thumbnail.appendChild(downArrow);
     imageList.appendChild(thumbnail);
 
     // Add drag events
     thumbnail.addEventListener("dragstart", handleDragStart);
     thumbnail.addEventListener("dragover", handleDragOver);
     thumbnail.addEventListener("dragend", handleDragEnd);
-    thumbnail.addEventListener("touchstart", handleTouchStart, {passive: false});
-    thumbnail.addEventListener("touchmove", handleTouchMove, {passive: false});
-    thumbnail.addEventListener("touchend", handleTouchEnd);
   });
 };
 
@@ -130,82 +143,7 @@ const handleDragEnd = () => {
   }
 };
 
-// Mobile touch handlers
-const handleTouchStart = (e) => {
-  e.preventDefault();
-  draggedItem = e.target.closest(".image-thumbnail");
-  if (!draggedItem) return;
 
-  draggedIndex = parseInt(draggedItem.dataset.index);
-  draggedItem.classList.add("dragging");
-
-  // Get initial position relative to viewport
-  const rect = draggedItem.getBoundingClientRect();
-  touchStartY = e.touches[0].clientY;
-  // Calculate offset from touch to element top (viewport coordinates)
-  touchOffsetY = touchStartY - rect.top;
-
-  // Store original position (relative to parent)
-  const parentRect = imageList.getBoundingClientRect();
-  draggedItem._originalTop = rect.top - parentRect.top;
-
-  // Prepare for dragging
-  draggedItem.style.position = "relative";
-  draggedItem.style.top = `${draggedItem._originalTop}px`;
-  draggedItem.style.zIndex = "1000";
-  draggedItem.style.transition = "none";
-};
-
-const handleTouchMove = (e) => {
-  e.preventDefault();
-  if (!draggedItem) return;
-
-  const y = e.touches[0].clientY;
-  const parentRect = imageList.getBoundingClientRect();
-
-  // Calculate new top position relative to parent
-  const newTop = (y - parentRect.top) - touchOffsetY;
-
-  // Update position
-  draggedItem.style.top = `${newTop}px`;
-
-  // Get all thumbnails excluding the dragged one
-  const thumbnails = Array.from(imageList.children).filter(thumb => thumb !== draggedItem);
-
-  // Find insertion point
-  for (let i = 0; i < thumbnails.length; i++) {
-    const thumb = thumbnails[i];
-    const thumbRect = thumb.getBoundingClientRect();
-    const thumbMiddle = thumbRect.top + thumbRect.height / 2;
-
-    if (y < thumbMiddle) {
-      if (i === 0 || y > thumbnails[i-1].getBoundingClientRect().bottom) {
-        imageList.insertBefore(draggedItem, thumb);
-        updateImageOrder();
-        break;
-      }
-    } else if (i === thumbnails.length - 1 && y > thumbRect.bottom) {
-      imageList.appendChild(draggedItem);
-      updateImageOrder();
-      break;
-    }
-  }
-};
-
-const handleTouchEnd = () => {
-  if (!draggedItem) return;
-
-  // Snap to final position
-  draggedItem.style.top = "0";
-  draggedItem.style.position = "";
-  draggedItem.style.zIndex = "";
-  draggedItem.style.transition = "";
-
-  setTimeout(() => {
-    draggedItem.classList.remove("dragging");
-    draggedItem = null;
-  }, 50);
-};
 // Update the loadedImages array when order changes
 const updateImageOrder = () => {
   const newOrder = Array.from(imageList.children).map(thumb =>

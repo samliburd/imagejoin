@@ -178,7 +178,12 @@ button#download:hover {
   touch-action: none; /* Important for mobile */
   user-select: none;
 }
-
+/*.image-thumbnail:nth-of-type(1) .up-arrow {*/
+/*  visibility: hidden;*/
+/*}*/
+/*.image-thumbnail:nth-last-of-type(1) .down-arrow {*/
+/*  visibility: hidden;*/
+/*}*/
 .image-thumbnail img {
   max-width: 50px;
   max-height: 50px;
