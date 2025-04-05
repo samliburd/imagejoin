@@ -30,21 +30,24 @@ body {
   justify-content: flex-start; /* Horizontal centering */
   align-items: center;
 }
+
 #title {
   margin-top: 0;
 }
+
 #controlContainer {
   display: flex;
   flex-direction: column;
-  /*width: fit-content; !* This allows controlContainer to size based on its content *!*/
-  width: 90%;
+  width: fit-content; /* This allows controlContainer to size based on its content */
+  /*width: 90%;*/
+  padding: 1rem 0.8rem;
   /*max-width: 100%; !* Ensures it doesn't exceed the screen width *!*/
   gap: 1rem;
   background-color: var(--secondary-bg);
-  padding: 1rem 0.25rem;
+  /*padding: 1rem 0.25rem;*/
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
   align-items: center; /* Centers the content horizontally */
 }
 
@@ -144,10 +147,18 @@ button#download:hover {
     width: 90%;
     min-width: 90%;
     align-content: space-around;
+    padding: 1rem 0.25rem;
   }
 
   #controlContainer > * {
     width: 90%; /* All direct children of controlContainer will have 75% width */
+  }
+.file-upload {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+  .file-upload:focus {
+    outline: none;
   }
 
   .file-label {
