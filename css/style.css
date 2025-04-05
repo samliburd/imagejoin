@@ -11,10 +11,7 @@
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   --transition: 0.2s ease-in-out;
   --font-stack: 'Segoe UI', Roboto, sans-serif;
-}
-
-#width, #width2 {
-  user-select: all;
+  --control-width: 300px;
 }
 
 body {
@@ -38,27 +35,25 @@ body {
 #controlContainer {
   display: flex;
   flex-direction: column;
-  width: fit-content(100%); /* This allows controlContainer to size based on its content */
-  /*width: 90%;*/
-  padding: 1rem 0.8rem;
-  /*max-width: 100%; !* Ensures it doesn't exceed the screen width *!*/
+  width: var(--control-width);
+  padding: 1rem;
   gap: 1rem;
   background-color: var(--secondary-bg);
-  /*padding: 1rem 0.25rem;*/
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   margin-bottom: 1.75rem;
   align-items: center; /* Centers the content horizontally */
+  box-sizing: border-box;
 }
 
 #controlContainer > * {
-  width: 90%; /* All direct children of controlContainer will have 75% width */
-  padding: 0 1rem;
+  width: 90%; /* All direct children of controlContainer will have 90% width */
 }
 
 .file-upload {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   cursor: pointer;
 }
@@ -107,7 +102,6 @@ input[type="checkbox"] {
 
 .filename-input input {
   flex-grow: 1; /* Makes the input take up the remaining space */
-  /*width: 0; !* Ensure it doesn't overflow *!*/
 }
 
 label {
@@ -152,6 +146,14 @@ button#download:hover {
   display: none;
 }
 
+#imageListContainer {
+  width: var(--control-width);
+  box-sizing: border-box;
+}
+
+#imageListContainer p {
+  text-align: center;
+}
 
 #imageList {
   display: flex;
@@ -159,11 +161,18 @@ button#download:hover {
   gap: 10px;
   margin: 10px 0;
   padding: 10px;
+  width: 100%;
   background-color: var(--secondary-bg);
-  /*padding: 1rem 0.25rem;*/
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   min-height: 50px;
+  box-sizing: border-box;
+}
+
+.preview-container {
+  flex: 1;
+  width: 40%;
+  margin-left: 10px;
 }
 
 .image-thumbnail {
@@ -172,29 +181,50 @@ button#download:hover {
   justify-content: space-between;
   padding: 8px;
   background-color: var(--button-bg);
-  /*border: 1px solid #ddd;*/
   border-radius: 2.5px;
   cursor: grab;
   touch-action: none; /* Important for mobile */
   user-select: none;
 }
-/*.image-thumbnail:nth-of-type(1) .up-arrow {*/
-/*  visibility: hidden;*/
-/*}*/
-/*.image-thumbnail:nth-last-of-type(1) .down-arrow {*/
-/*  visibility: hidden;*/
-/*}*/
+
 .image-thumbnail img {
   max-width: 50px;
   max-height: 50px;
   margin-right: 10px;
 }
+
 .image-thumbnail .thumbnail-label {
   text-align: right;
 }
+
 .image-thumbnail.dragging {
   opacity: 0.5;
   border: 1px dashed #999;
+}
+
+.up-arrow, .down-arrow {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition);
+}
+
+.up-arrow:hover, .down-arrow:hover {
+  background-color: var(--button-hover);
+}
+
+.disabled {
+  opacity: 0.3;
+  cursor: pointer;
 }
 
 #imageListContainer.hidden {
@@ -203,23 +233,26 @@ button#download:hover {
 
 @media screen and (max-width: 600px) {
   body {
-    padding: 2rem 0.8rem;
-    padding-top: 1rem;
+    padding: 1rem 0.8rem 2rem;
   }
 
   #title {
     margin-top: 0;
   }
 
+  :root {
+    --control-width: 90%;
+  }
+
   #controlContainer {
-    width: 90%;
-    min-width: 90%;
+    width: var(--control-width);
+    min-width: var(--control-width);
     align-content: space-around;
     padding: 1rem 0.25rem;
   }
 
   #controlContainer > * {
-    width: 90%; /* All direct children of controlContainer will have 75% width */
+    width: 90%;
   }
 
   .file-upload {
@@ -232,7 +265,7 @@ button#download:hover {
   }
 
   .file-label {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: bold;
   }
 
@@ -242,8 +275,7 @@ button#download:hover {
   }
 
   #imageListContainer {
-    width: 90%;
-    min-width: 90%;
+    width: var(--control-width);
+    min-width: var(--control-width);
   }
-
 }

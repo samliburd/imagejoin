@@ -94,6 +94,36 @@ const loadAndDrawImages = async (files) => {
   }
 };
 
+// Move image up in the order
+const moveImageUp = (index) => {
+  if (index <= 0) return; // Can't move first item up
+
+  // Swap images in the loadedImages array
+  [loadedImages[index], loadedImages[index - 1]] = [loadedImages[index - 1], loadedImages[index]];
+  // Rebuild the thumbnails to reflect the new order
+  imageList.innerHTML = "";
+  createImageThumbnails();
+
+
+  // Redraw canvas with new order
+  drawToCanvas();
+};
+
+// Move image down in the order
+const moveImageDown = (index) => {
+  if (index >= loadedImages.length - 1) return; // Can't move last item down
+
+  // Swap images in the loadedImages array
+  [loadedImages[index], loadedImages[index + 1]] = [loadedImages[index + 1], loadedImages[index]];
+
+  // Rebuild the thumbnails to reflect the new order
+  imageList.innerHTML = "";
+  createImageThumbnails();
+
+  // Redraw canvas with new order
+  drawToCanvas();
+};
+
 // Create draggable thumbnails
 const createImageThumbnails = () => {
   imageListContainer.classList.remove("hidden");
@@ -107,27 +137,47 @@ const createImageThumbnails = () => {
     const upArrow = document.createElement("button");
     upArrow.className = "up-arrow";
     upArrow.innerHTML = "&uarr;";
+    if (index === 0) {
+      upArrow.disabled = true;
+      upArrow.classList.add('disabled');
+    } else {
+      upArrow.disabled = false;
+      upArrow.classList.remove('disabled');
+    }
     upArrow.addEventListener("click", () => {
-      console.log(e);
+      moveImageUp(index);
     });
 
     const downArrow = document.createElement("button");
     downArrow.className = "down-arrow";
     downArrow.innerHTML = "&darr;";
-    downArrow.addEventListener("click", (e) => {
-      console.log(e);
+    if (index === loadedImages.length - 1) {
+      downArrow.disabled = true;
+      downArrow.classList.add('disabled');
+    } else {
+      downArrow.disabled = false;
+      downArrow.classList.remove('disabled');
+    }
+    downArrow.addEventListener("click", () => {
+      moveImageDown(index);
     });
+
+    const previewContainer = document.createElement("div");
+    previewContainer.className = "preview-container";
 
     const imgPreview = document.createElement("img");
     imgPreview.src = img.src;
 
+    const imgName = img.src.split('/').pop()
     const label = document.createElement("span");
     label.className = "thumbnail-label";
-    label.textContent = `Image ${index + 1}`;
+    label.textContent = `${imgName}`;
+
+    previewContainer.appendChild(imgPreview);
+    previewContainer.appendChild(label);
 
     thumbnail.appendChild(upArrow);
-    thumbnail.appendChild(imgPreview);
-    thumbnail.appendChild(label);
+    thumbnail.appendChild(previewContainer);
     thumbnail.appendChild(downArrow);
     imageList.appendChild(thumbnail);
 
@@ -172,15 +222,42 @@ const handleDragEnd = () => {
 
 // Update image order after drag
 const updateImageOrder = () => {
-  const newOrder = Array.from(imageList.children).map((thumb) =>
+  // Get new order based on the current DOM arrangement
+  const thumbnails = Array.from(imageList.children);
+  const newOrder = thumbnails.map((thumb) =>
     loadedImages[parseInt(thumb.dataset.index)]
   );
   loadedImages = newOrder;
 
-  imageList.querySelectorAll(".image-thumbnail").forEach((thumb, index) => {
+  // Update indices and arrow states
+  thumbnails.forEach((thumb, index) => {
+    // Update index data attribute
     thumb.dataset.index = index;
+
+    // Get the up and down arrow buttons
+    const upArrow = thumb.querySelector(".up-arrow");
+    const downArrow = thumb.querySelector(".down-arrow");
+
+    // Update up arrow state
+    if (index === 0) {
+      upArrow.disabled = true;
+      upArrow.classList.add('disabled');
+    } else {
+      upArrow.disabled = false;
+      upArrow.classList.remove('disabled');
+    }
+
+    // Update down arrow state
+    if (index === loadedImages.length - 1) {
+      downArrow.disabled = true;
+      downArrow.classList.add('disabled');
+    } else {
+      downArrow.disabled = false;
+      downArrow.classList.remove('disabled');
+    }
   });
 
+  // Redraw the canvas with the new order
   drawToCanvas();
 };
 
