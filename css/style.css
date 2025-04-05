@@ -55,6 +55,7 @@ body {
   width: 90%; /* All direct children of controlContainer will have 75% width */
   padding: 0 1rem;
 }
+
 .file-upload {
   display: flex;
   align-items: center;
@@ -191,4 +192,42 @@ button#download:hover {
     width: 90%;
     min-width: 90%;
   }
+}
+
+#imageList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 5px;
+  min-height: 50px;
+}
+
+.image-thumbnail {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: grab;
+  touch-action: none; /* Important for mobile */
+  user-select: none;
+}
+
+.image-thumbnail img {
+  max-width: 50px;
+  max-height: 50px;
+  margin-right: 10px;
+}
+
+.image-thumbnail.dragging {
+  opacity: 0.5;
+  border: 1px dashed #999;
+}
+
+#imageListContainer.hidden {
+  display: none;
 }
