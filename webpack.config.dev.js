@@ -1,5 +1,7 @@
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
+const HtmlWebpackPlugin = require('html-webpack-plugin');  // <-- Ensure you have this
+
 
 module.exports = merge(common, {
   mode: 'development',
@@ -36,4 +38,12 @@ module.exports = merge(common, {
       },
     ],
   },
+  plugins: [
+    // Make sure this is in your dev config to inject the script properly
+    new HtmlWebpackPlugin({
+      template: './index.html',  // Use your original HTML template
+      filename: 'index.html',
+      inject: 'body',  // This ensures script is injected at the end of the body
+    }),
+  ],
 });

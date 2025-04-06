@@ -107,6 +107,8 @@ const loadAndDrawImages = async (files) => {
   }
 };
 
+
+
 // Move image up in the order
 const moveImageUp = (index) => {
   if (index <= 0) return; // Can't move first item up
