@@ -108,7 +108,6 @@ const loadAndDrawImages = async (files) => {
 };
 
 
-
 // Move image up in the order
 const moveImageUp = (index) => {
   if (index <= 0) return; // Can't move first item up
@@ -139,7 +138,23 @@ const moveImageDown = (index) => {
   drawToCanvas();
 };
 
-// Create draggable thumbnails
+// Utility function to create a thumbnail using a canvas
+const createThumbnail = (img, width, height) => {
+  const canvasThumbnail = document.createElement("canvas");
+  const ctxThumbnail = canvasThumbnail.getContext("2d");
+
+  // Set canvas dimensions to the thumbnail size
+  canvasThumbnail.width = width;
+  canvasThumbnail.height = height;
+
+  // Draw the image onto the canvas with the new size
+  ctxThumbnail.drawImage(img, 0, 0, width, height);
+
+  // Return the data URL of the thumbnail image
+  return canvasThumbnail.toDataURL("image/jpeg", 0.7); // you can adjust the quality here
+};
+
+// Create draggable thumbnails (updated to use the canvas)
 const createImageThumbnails = () => {
   imageListContainer.classList.remove("hidden");
 
@@ -148,6 +163,9 @@ const createImageThumbnails = () => {
     thumbnail.className = "image-thumbnail";
     thumbnail.draggable = true;
     thumbnail.dataset.index = index;
+
+    // Create the thumbnail using a canvas
+    const thumbnailSrc = createThumbnail(img, 100, 100); // Adjust the size as needed
 
     const upArrow = document.createElement("button");
     upArrow.className = "up-arrow";
@@ -180,9 +198,15 @@ const createImageThumbnails = () => {
     const previewContainer = document.createElement("div");
     previewContainer.className = "preview-container";
 
+    // Create an image element for the thumbnail
     const imgPreview = document.createElement("img");
     imgPreview.className = "thumbnail-img";
-    imgPreview.src = img.src;
+    imgPreview.src = thumbnailSrc; // Use the thumbnail data URL
+
+    // Disable right-click on the thumbnail image
+    imgPreview.addEventListener("contextmenu", (e) => {
+      e.preventDefault(); // This disables the right-click context menu
+    });
 
     const imgName = img.originalName || img.src.split('/').pop();
     const label = document.createElement("span");
@@ -202,7 +226,6 @@ const createImageThumbnails = () => {
     thumbnail.addEventListener("dragend", handleDragEnd);
   });
 };
-
 // Drag handlers
 const handleDragStart = (e) => {
   draggedItem = e.target.closest(".image-thumbnail");
