@@ -72,7 +72,7 @@ body {
   background-color: $secondary-bg;
   border-radius: $border-radius;
   box-shadow: $shadow;
-  margin-bottom: 1.75rem;
+  margin-bottom: .5rem;
   align-items: center;
   box-sizing: border-box;
 
@@ -150,6 +150,7 @@ button {
   background-color: $secondary-bg;
   border-radius: $border-radius;
   box-shadow: $shadow;
+  margin-top: 1rem;
 }
 
 #canvas {
@@ -169,6 +170,8 @@ button {
 
   p {
     text-align: center;
+    font-size: 0.8rem;
+    margin: 0;
   }
 
   &.hidden {
@@ -201,20 +204,38 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 8px;
+  height: 25px;
+  max-height: 45px; // Explicit max height
   background-color: $button-bg;
   border-radius: 2.5px;
   cursor: grab;
   touch-action: none;
   user-select: none;
+  overflow: hidden; // Prevent any overflow
+
+  .preview-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    gap: 10px;
+    min-width: 0; // Allows text truncation
+  }
 
   img {
-    max-width: 50px;
-    max-height: 50px;
-    margin-right: 10px;
+    width: 25px;
+    height: auto;
+    object-fit: contain; // Show whole image
+    flex-shrink: 0; // Prevent image from shrinking
   }
 
   .thumbnail-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1; // Allow text to shrink if needed
     text-align: right;
+    font-size: 0.8rem;
   }
 
   &.dragging {
@@ -236,6 +257,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   transition: background-color $transition;
 
   &:hover {
