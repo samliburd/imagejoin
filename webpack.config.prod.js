@@ -5,6 +5,32 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = merge(common, {
   mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.scss$/i,
+        use: [
+          'style-loader', // Inject styles into DOM
+          'css-loader', // Turns CSS into CommonJS
+          {
+            loader: 'sass-loader', // Compiles Sass to CSS
+            options: {
+              sassOptions: {
+                includePaths: ['node_modules'], // Ensures node_modules are available for imports
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/i, // This rule is for CSS files
+        use: [
+          'style-loader', // Inject CSS into DOM
+          'css-loader', // Turns CSS into CommonJS
+        ],
+      },
+    ],
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',

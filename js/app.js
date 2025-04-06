@@ -1,3 +1,7 @@
+// Imports
+import "../css/base.css"
+import "../css/style.scss"
+
 // DOM references
 const canvas = document.getElementById("canvas");
 const canvasContainer = document.getElementById("canvasContainer");
@@ -37,7 +41,11 @@ const loadImageFromFile = (file) => {
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
-      img.onload = () => resolve(img);
+      img.onload = () => {
+        // Store the original file name as a property on the image object
+        img.originalName = file.name;
+        resolve(img);
+      };
       img.onerror = () => reject(`Failed to load image: ${file.name}`);
       img.src = reader.result;
     };
@@ -140,7 +148,7 @@ const createImageThumbnails = () => {
     if (index === 0) {
       upArrow.disabled = true;
       upArrow.classList.add('disabled');
-    } else {
+    } else if (index > 0) {
       upArrow.disabled = false;
       upArrow.classList.remove('disabled');
     }
@@ -154,7 +162,7 @@ const createImageThumbnails = () => {
     if (index === loadedImages.length - 1) {
       downArrow.disabled = true;
       downArrow.classList.add('disabled');
-    } else {
+    } else if (index < loadedImages.length - 1) {
       downArrow.disabled = false;
       downArrow.classList.remove('disabled');
     }
@@ -168,7 +176,7 @@ const createImageThumbnails = () => {
     const imgPreview = document.createElement("img");
     imgPreview.src = img.src;
 
-    const imgName = img.src.split('/').pop()
+    const imgName = img.originalName || img.src.split('/').pop();
     const label = document.createElement("span");
     label.className = "thumbnail-label";
     label.textContent = `${imgName}`;
@@ -242,7 +250,7 @@ const updateImageOrder = () => {
     if (index === 0) {
       upArrow.disabled = true;
       upArrow.classList.add('disabled');
-    } else {
+    } else if (index !== 0) {
       upArrow.disabled = false;
       upArrow.classList.remove('disabled');
     }
@@ -251,7 +259,7 @@ const updateImageOrder = () => {
     if (index === loadedImages.length - 1) {
       downArrow.disabled = true;
       downArrow.classList.add('disabled');
-    } else {
+    } else if (index !== loadedImages.length - 1) {
       downArrow.disabled = false;
       downArrow.classList.remove('disabled');
     }
@@ -313,12 +321,20 @@ const downloadImage = () => {
 };
 
 // Event Listeners
-uploadInput.addEventListener("change", (e) => {
+
+// Remove any existing listener first
+uploadInput.removeEventListener('change', handleUpload);
+// Then add the new one
+uploadInput.addEventListener('change', handleUpload);
+
+function handleUpload(e) {
   const files = e.target.files;
   if (files.length) {
     loadAndDrawImages(files);
+    // Clear the input after processing
+    e.target.value = '';
   }
-});
+}
 
 checkbox.addEventListener("change", drawToCanvas);
 
