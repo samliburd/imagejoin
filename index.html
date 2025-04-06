@@ -35,15 +35,15 @@
 
   <div class="checkboxContainer"><label for="scaleCheckbox">Resize to largest dimension</label>
     <input type="checkbox" name="scaleCheckbox" id="scaleCheckbox" checked></div>
-  <div class="checkboxContainer"><label for="debug">Debug?</label>
-    <input type="checkbox" name="debug" id="debug"></div>
+<!--  <div class="checkboxContainer"><label for="debug">Debug</label>-->
+<!--    <input type="checkbox" name="debug" id="debug"></div>-->
 
   <label class="filename-input" for="filename"><span class="label-text">Filename: </span><input type="text" name="filename" id="filename"></label>
   <button id="download">Download image</button>
 </div>
 <div id="imageListContainer" class="hidden">
   <div id="imageList"></div>
-  <p>Drag images to reorder</p>
+  <p id="helpText"></p>
 </div>
 <div id="canvasContainer">
   <canvas id="canvas"></canvas>

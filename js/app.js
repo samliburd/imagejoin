@@ -12,15 +12,18 @@ const debug = document.getElementById("debug");
 const downloadButton = document.getElementById("download");
 const imageListContainer = document.getElementById("imageListContainer");
 const imageList = document.getElementById("imageList");
+const helpText = document.getElementById("helpText");
 
 // Constants
 const TEST_IMAGES = [
   "testimg/1.jpg",
-  "testimg/2.png",
-  "testimg/rect.png",
+  // "testimg/2.png",
+  // "testimg/rect.png",
   // "testimg/rect2.png",
-  // "testimg/triangle.png"
+  "testimg/triangle.png"
 ];
+const mediaQuery = window.matchMedia('(max-width: 600px)')
+
 
 // State
 let loadedImages = [];
@@ -174,6 +177,7 @@ const createImageThumbnails = () => {
     previewContainer.className = "preview-container";
 
     const imgPreview = document.createElement("img");
+    imgPreview.className = "thumbnail-img";
     imgPreview.src = img.src;
 
     const imgName = img.originalName || img.src.split('/').pop();
@@ -321,8 +325,16 @@ const downloadImage = () => {
 };
 
 // Event Listeners
+const mediaQueryChange = (e) => {
+  if (e.matches) {
+    helpText.innerText = "Use the arrows to adjust image order."
+  } else {
+    helpText.innerText = "Drag images to reorder or use the arrows."
+  }
+}
+mediaQuery.addEventListener("change", mediaQueryChange)
+mediaQueryChange(mediaQuery)
 
-// Remove any existing listener first
 uploadInput.removeEventListener('change', handleUpload);
 // Then add the new one
 uploadInput.addEventListener('change', handleUpload);
