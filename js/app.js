@@ -9,6 +9,7 @@ const ctx = canvas.getContext("2d");
 const uploadInput = document.getElementById("upload");
 const checkbox = document.getElementById("scaleCheckbox");
 const debug = document.getElementById("debug");
+const debugContainer = document.getElementById("debugContainer");
 const downloadButton = document.getElementById("download");
 const imageListContainer = document.getElementById("imageListContainer");
 const imageList = document.getElementById("imageList");
@@ -24,6 +25,7 @@ const TEST_IMAGES = [
 ];
 const mediaQuery = window.matchMedia('(max-width: 600px)')
 
+debugContainer.style.display = "none";
 
 // State
 let loadedImages = [];
