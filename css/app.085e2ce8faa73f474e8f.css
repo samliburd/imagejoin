@@ -1,0 +1,250 @@
+/*! HTML5 Boilerplate v9.0.1 | MIT License | https://html5boilerplate.com/ */
+
+/* main.css 3.0.0 | MIT License | https://github.com/h5bp/main.css#readme */
+/*
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+html {
+  color: #222;
+  font-size: 1em;
+  line-height: 1.4;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+::selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+/*
+ * Remove the gap between audio, canvas, iframes,
+ * images, videos and the bottom of their containers:
+ * https://github.com/h5bp/html5-boilerplate/issues/440
+ */
+
+audio,
+canvas,
+iframe,
+img,
+svg,
+video {
+  vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+  resize: vertical;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+/*
+ * Hide visually and from screen readers
+ */
+
+.hidden,
+[hidden] {
+  display: none !important;
+}
+
+/*
+ * Hide only visually, but have it available for screen readers:
+ * https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ *
+ * 1. For long content, line feeds are not interpreted as spaces and small width
+ *    causes content to wrap 1 word per line:
+ *    https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
+ */
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+  /* 1 */
+}
+
+/*
+ * Extends the .visually-hidden class to allow the element
+ * to be focusable when navigated to via the keyboard:
+ * https://www.drupal.org/node/897638
+ */
+
+.visually-hidden.focusable:active,
+.visually-hidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  white-space: inherit;
+  width: auto;
+}
+
+/*
+ * Hide visually and from screen readers, but maintain layout
+ */
+
+.invisible {
+  visibility: hidden;
+}
+
+/*
+ * Clearfix: contain floats
+ *
+ * The use of `table` rather than `block` is only necessary if using
+ * `::before` to contain the top-margins of child elements.
+ */
+
+.clearfix::before,
+.clearfix::after {
+  content: "";
+  display: table;
+}
+
+.clearfix::after {
+  clear: both;
+}
+
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+  /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+  (-webkit-min-device-pixel-ratio: 1.25),
+  (min-resolution: 1.25dppx),
+  (min-resolution: 120dpi) {
+  /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid the additional HTTP request:
+   https://www.phpied.com/delay-loading-your-print-css/
+   ========================================================================== */
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: #fff !important;
+    color: #000 !important;
+    /* Black prints faster */
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+
+  abbr[title]::after {
+    content: " (" attr(title) ")";
+  }
+
+  /*
+   * Don't show links that are fragment identifiers,
+   * or use the `javascript:` pseudo protocol
+   */
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: "";
+  }
+
+  pre {
+    white-space: pre-wrap !important;
+  }
+
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+
+  tr,
+  img {
+    page-break-inside: avoid;
+  }
+
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+}
+
+
+:root{--primary-bg: #2f3b45;--secondary-bg: #3b4a56;--accent: #5c6b78;--text-color: #f1f1f1;--button-bg: #607d8b;--button-hover: #78909c;--border-radius: 6px;--shadow: 0 4px 6px rgba(0, 0, 0, 0.3);--transition: 0.2s ease-in-out;--font-stack: "Segoe UI", Roboto, sans-serif;--control-width: 300px}body{background-color:var(--primary-bg);color:var(--text-color);font-family:var(--font-stack);margin:0;padding:2rem;padding-top:1rem;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}#title{margin-top:0}#controlContainer{display:flex;flex-direction:column;width:var(--control-width);padding:1rem;gap:1rem;background-color:var(--secondary-bg);border-radius:var(--border-radius);box-shadow:var(--shadow);margin-bottom:1.75rem;align-items:center;box-sizing:border-box}#controlContainer>*{width:90%}.file-upload{display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer}.file-btn{background-color:var(--button-bg);color:#fff;border-radius:var(--border-radius);box-shadow:var(--shadow);transition:background-color var(--transition);cursor:pointer;padding:.5em 1em;border-radius:2.5px;font-weight:bold}.file-btn:hover{background-color:var(--button-hover)}.file-label{font-size:.9rem;color:var(--text-color);opacity:.8}.checkboxContainer{display:flex;justify-content:space-between}input[type=checkbox]{accent-color:var(--button-bg);transform:scale(1.2);margin-right:.5rem}.filename-input{display:flex;justify-content:space-between;align-items:center}.filename-input .label-text{width:auto;margin-right:10px}.filename-input input{flex-grow:1}label{font-size:.95rem;display:flex;align-items:center;gap:.5rem}button#download{background-color:var(--button-bg);color:#fff;border-radius:var(--border-radius);box-shadow:var(--shadow);transition:background-color var(--transition);cursor:pointer;border:none;padding:.6em 1.2em;font-size:1rem}button#download:hover{background-color:var(--button-hover)}#canvasContainer{width:90%;padding:.25rem;background-color:var(--secondary-bg);border-radius:var(--border-radius);box-shadow:var(--shadow)}#canvas{width:100%;height:auto;display:block;border-radius:var(--border-radius)}.hidden{display:none}#imageListContainer{width:var(--control-width);box-sizing:border-box}#imageListContainer p{text-align:center}#imageListContainer.hidden{display:none}#imageList{display:flex;flex-direction:column;gap:10px;margin:10px 0;padding:10px;width:100%;background-color:var(--secondary-bg);border-radius:var(--border-radius);box-shadow:var(--shadow);min-height:50px;box-sizing:border-box}.preview-container{flex:1;width:40%;margin-left:10px}.image-thumbnail{display:flex;align-items:center;justify-content:space-between;padding:8px;background-color:var(--button-bg);border-radius:2.5px;cursor:grab;touch-action:none;user-select:none}.image-thumbnail img{max-width:50px;max-height:50px;margin-right:10px}.image-thumbnail .thumbnail-label{text-align:right}.image-thumbnail.dragging{opacity:.5;border:1px dashed #999}.up-arrow,.down-arrow{background-color:var(--accent);color:#fff;border:none;border-radius:3px;cursor:pointer;width:24px;height:24px;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:background-color var(--transition)}.up-arrow:hover,.down-arrow:hover{background-color:var(--button-hover)}.disabled{opacity:.3;cursor:pointer}@media screen and (max-width: 600px){:root{--control-width: 90%}body{padding:1rem .8rem 2rem}#title{margin-top:0}#controlContainer{width:var(--control-width);min-width:var(--control-width);align-content:space-around;padding:1rem .25rem}#controlContainer>*{width:90%}.file-upload{-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-tap-highlight-color:rgba(0,0,0,0)}.file-upload:focus{outline:none}.file-label{font-size:1.25rem;font-weight:bold}#canvasContainer{width:90%;min-width:90%}#imageListContainer{width:var(--control-width);min-width:var(--control-width)}}
