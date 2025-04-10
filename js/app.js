@@ -1,7 +1,6 @@
 // Imports
 import "../css/base.css"
 import "../css/style.scss"
-import { Analytics } from "@vercel/analytics/react"
 
 // DOM references
 const canvas = document.getElementById("canvas");

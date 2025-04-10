@@ -3,16 +3,30 @@
 
 <head>
   <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-M99M3C5P');</script>
+  <script>(function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({
+      'gtm.start':
+        new Date().getTime(), event: 'gtm.js'
+    });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+    j.async = true;
+    j.src =
+      'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(window, document, 'script', 'dataLayer', 'GTM-M99M3C5P');</script>
   <!-- End Google Tag Manager -->
+  <script>
+    window.va = window.va || function () {
+      (window.vaq = window.vaq || []).push(arguments);
+    };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
-<!--  <link rel="stylesheet" href="css/style.css">-->
+  <!--  <link rel="stylesheet" href="css/style.css">-->
   <meta name="description" content="">
 
   <meta property="og:title" content="">
@@ -31,8 +45,10 @@
 
 <body>
 <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M99M3C5P"
-                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript>
+  <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M99M3C5P"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
 <!-- End Google Tag Manager (noscript) -->
 <!-- Add your site or application content here -->
 <h1 id="title">Photo Join</h1>
@@ -48,7 +64,9 @@
   <div class="checkboxContainer" id="debugContainer"><label for="debug">Debug</label>
     <input type="checkbox" name="debug" id="debug"></div>
 
-  <label class="filename-input" for="filename"><span class="label-text">Filename: </span><input type="text" name="filename" id="filename"></label>
+  <label class="filename-input" for="filename"><span class="label-text">Filename: </span><input type="text"
+                                                                                                name="filename"
+                                                                                                id="filename"></label>
   <button id="download">Download image</button>
 </div>
 <div id="imageListContainer" class="hidden">
