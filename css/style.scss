@@ -50,19 +50,31 @@ body {
   color: $text-color;
   font-family: $font-stack;
   margin: 0;
-  padding: 2rem;
-  padding-top: 1rem;
+  padding: 1rem 2rem 2rem;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
 }
 
 #title {
-  margin-top: 0;
+  text-align: center;
+  color: $text-color;
+  //background-color: $button-bg;
+  margin-left: -2rem;
+  margin-right: -2rem;
+  margin-top: -1rem;
+  padding: 0.5rem;
 }
 
+main {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.controls {
+  display: flex;
+  flex-direction: column;
+}
 #controlContainer {
   display: flex;
   flex-direction: column;
@@ -106,38 +118,6 @@ body {
   display: flex;
   justify-content: space-between;
 }
-.dropdownContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  label {
-    margin-right: 10px;
-    white-space: nowrap; // Keeps the label on one line
-  }
-
-  #orientationDropdown {
-    flex-grow: 1; // Allows it to fill remaining space like your text input
-    background-color: $primary-bg;
-    color: $text-color;
-    border: 1px solid $accent;
-    padding: 0.4rem 0.5rem;
-    border-radius: 4px;
-    font-family: $font-stack;
-    font-size: 0.9rem;
-    cursor: pointer;
-    outline: none;
-
-    &:focus {
-      border-color: $button-hover;
-    }
-
-    option {
-      background-color: $primary-bg;
-      color: $text-color;
-    }
-  }
-}
 
 input[type='checkbox'] {
   accent-color: $button-bg;
@@ -174,6 +154,39 @@ input[type='checkbox'] {
   }
 }
 
+.dropdownContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  label {
+    margin-right: 10px;
+    white-space: nowrap; // Keeps the label on one line
+  }
+
+  #orientationDropdown {
+    flex-grow: 1; // Allows it to fill remaining space like your text input
+    background-color: $primary-bg;
+    color: $text-color;
+    border: 1px solid $accent;
+    padding: 0.4rem 0.5rem;
+    border-radius: 4px;
+    font-family: $font-stack;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+
+    &:focus {
+      border-color: $button-hover;
+    }
+
+    option {
+      background-color: $primary-bg;
+      color: $text-color;
+    }
+  }
+}
+
 label {
   font-size: 0.95rem;
   display: flex;
@@ -196,7 +209,7 @@ button {
   background-color: $secondary-bg;
   border-radius: $border-radius;
   box-shadow: $shadow;
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
 #canvas {

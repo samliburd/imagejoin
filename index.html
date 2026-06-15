@@ -95,47 +95,53 @@
     <!-- End Google Tag Manager (noscript) -->
     <!-- Add your site or application content here -->
     <h1 id="title">Photo Join</h1>
-    <div id="controlContainer">
-      <label class="file-upload">
-        <input type="file" name="upload" id="upload" multiple hidden />
-        <span class="file-btn">Choose Files </span>
-        <span class="file-label" id="fileLabel">No files chosen</span>
-      </label>
+    <main>
+      <div class="controls">
+        <div id="controlContainer">
+          <label class="file-upload">
+            <input type="file" name="upload" id="upload" multiple hidden />
+            <span class="file-btn">Choose Files </span>
+            <span class="file-label" id="fileLabel">No files chosen</span>
+          </label>
 
-      <div class="checkboxContainer">
-        <label for="scaleCheckbox">Resize to largest image</label>
-        <input
-          type="checkbox"
-          name="scaleCheckbox"
-          id="scaleCheckbox"
-          checked
-        />
-      </div>
-      <div class="dropdownContainer">
-        <label for="orientationDropdown">Orientation:</label>
-        <select name="orientationDropdown" id="orientationDropdown">
-          <option value="portrait">Portrait</option>
-          <option value="landscape">Landscape</option>
-        </select>
-      </div>
-      <div class="checkboxContainer" id="debugContainer">
-        <label for="debug">Debug</label>
-        <input type="checkbox" name="debug" id="debug" />
-      </div>
+          <div class="checkboxContainer">
+            <label for="scaleCheckbox">Resize to largest image</label>
+            <input
+              type="checkbox"
+              name="scaleCheckbox"
+              id="scaleCheckbox"
+              checked
+            />
+          </div>
 
-      <label class="filenameInput" for="filename"
-        ><span class="label-text">Filename: </span
-        ><input type="text" name="filename" id="filename"
-      /></label>
-      <button id="download">Download image</button>
-    </div>
-    <div id="imageListContainer" class="hidden">
-      <div id="imageList"></div>
-      <p id="helpText"></p>
-    </div>
-    <div id="canvasContainer">
-      <canvas id="canvas"></canvas>
-    </div>
+          <div class="dropdownContainer">
+            <label for="orientationDropdown">Orientation:</label>
+            <select name="orientationDropdown" id="orientationDropdown">
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+
+          <label class="filenameInput" for="filename"
+            ><span class="label-text">Filename: </span
+            ><input type="text" name="filename" id="filename"
+          /></label>
+          <div class="checkboxContainer" id="debugContainer">
+            <label for="debug">Debug</label>
+            <input type="checkbox" name="debug" id="debug" />
+          </div>
+
+          <button id="download">Download image</button>
+        </div>
+        <div id="imageListContainer" class="hidden">
+          <div id="imageList"></div>
+          <p id="helpText"></p>
+        </div>
+      </div>
+      <div id="canvasContainer">
+        <canvas id="canvas"></canvas>
+      </div>
+    </main>
 
     <!--<script src="./js/app.js"></script>-->
   </body>

@@ -19,14 +19,14 @@ const helpText = document.getElementById('helpText');
 // Constants
 const TEST_IMAGES = [
   'testimg/1.jpg',
-  // "testimg/2.png",
-  // "testimg/rect.png",
+  'testimg/2.png',
+  'testimg/rect.png',
   // "testimg/rect2.png",
-  'testimg/triangle.png',
+  // 'testimg/triangle.png',
 ];
 const mediaQuery = window.matchMedia('(max-width: 600px)');
 
-debugContainer.style.display = 'none';
+// debugContainer.style.display = 'block';
 
 // state vars
 let loadedImages = [];
