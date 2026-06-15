@@ -15,18 +15,37 @@ const downloadButton = document.getElementById('download');
 const imageListContainer = document.getElementById('imageListContainer');
 const imageList = document.getElementById('imageList');
 const helpText = document.getElementById('helpText');
+const orientationButtons = document.querySelectorAll('.orientationButton');
+const fileLabel = document.getElementById('fileLabel');
+let currentOrientation = 'portrait';
 
+// 1. Define the function FIRST
+const changeOrientation = (event) => {
+  event.preventDefault();
+  if (event.target.id === 'portraitButton') {
+    currentOrientation = 'portrait';
+  } else if (event.target.id === 'landscapeButton') {
+    currentOrientation = 'landscape';
+  }
+
+  drawToCanvas();
+};
+
+// 2. THEN attach the listeners
+orientationButtons.forEach((child) => {
+  child.addEventListener('click', changeOrientation);
+});
 // Constants
 const TEST_IMAGES = [
   'testimg/1.jpg',
   'testimg/2.png',
   'testimg/rect.png',
-  // "testimg/rect2.png",
-  // 'testimg/triangle.png',
+  'testimg/rect2.png',
+  'testimg/triangle.png',
 ];
 const mediaQuery = window.matchMedia('(max-width: 600px)');
 
-// debugContainer.style.display = 'block';
+debugContainer.hidden = true;
 
 // state vars
 let loadedImages = [];
@@ -94,6 +113,8 @@ const loadAndDrawImages = async (files) => {
     imageList.innerHTML = '';
 
     loadedImages = await Promise.all(Array.from(files).map(loadImageFromFile));
+    fileLabel.innerText = `${loadedImages.length} images selected`;
+    console.log(loadedImages.length);
 
     if (loadedImages.length > 0) {
       createImageThumbnails();
@@ -286,7 +307,7 @@ const drawToCanvas = () => {
 
   showCanvasContainer();
 
-  const isPortrait = orientation.value === 'portrait';
+  const isPortrait = currentOrientation === 'portrait';
 
   if (isPortrait) {
     // Stack vertically based on a unified width

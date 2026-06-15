@@ -99,19 +99,24 @@ main {
   justify-content: space-between;
   gap: 1rem;
   cursor: pointer;
-}
 
-.file-btn {
-  @include button-styles;
-  padding: 0.5em 1em;
-  border-radius: 2.5px;
-  font-weight: bold;
-}
+  .file-btn {
+    @include button-styles;
+    padding: 0.5em 1em;
+    border-radius: 2.5px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
 
-.file-label {
-  font-size: 0.9rem;
-  color: $text-color;
-  opacity: 0.8;
+  .file-label {
+    font-size: 0.9rem;
+    color: $text-color;
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
 }
 
 .checkboxContainer {
@@ -133,11 +138,13 @@ input[type='checkbox'] {
   .label-text {
     width: auto;
     margin-right: 10px;
-    white-space: nowrap; // Prevents the label from wrapping on narrow screens
+    white-space: nowrap;
   }
 
   input {
     flex-grow: 1;
+    min-width: 0; // Essential for preventing flex blowout
+    box-sizing: border-box; // <--- This is the crucial fix
     background-color: $primary-bg;
     color: $text-color;
     border: 1px solid $accent;
@@ -163,8 +170,24 @@ input[type='checkbox'] {
     margin-right: 10px;
     white-space: nowrap; // Keeps the label on one line
   }
-
+  #orientationButtons {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    .orientationButton {
+      @include button-styles;
+      height: 2rem;
+      width: 2rem;
+      background-color: white;
+      color: $button-bg;
+      &:hover {
+        color: white;
+        background-color: $button-bg;
+      }
+    }
+  }
   #orientationDropdown {
+    display: none;
     flex-grow: 1; // Allows it to fill remaining space like your text input
     background-color: $primary-bg;
     color: $text-color;
@@ -348,15 +371,30 @@ button {
   #title {
     margin-top: 0;
   }
-
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .controls {
+    flex-direction: column;
+    align-items: center;
+  }
   #controlContainer {
     width: $control-width;
     min-width: $control-width;
     align-content: space-around;
-    padding: 1rem 0.25rem;
+    padding: 1rem 0.5rem;
 
     > * {
       width: 90%;
+    }
+
+    .filenameInput {
+      width: 90%;
+      input {
+        width: auto;
+      }
     }
   }
 
