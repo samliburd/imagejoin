@@ -1,6 +1,7 @@
 // Imports
 import '../css/base.css';
 import '../css/style.scss';
+
 // DOM references
 const canvas = document.getElementById('canvas');
 const canvasContainer = document.getElementById('canvasContainer');
@@ -14,6 +15,7 @@ const downloadButton = document.getElementById('download');
 const imageListContainer = document.getElementById('imageListContainer');
 const imageList = document.getElementById('imageList');
 const helpText = document.getElementById('helpText');
+
 // Constants
 const TEST_IMAGES = [
   'testimg/1.jpg',
@@ -25,10 +27,6 @@ const TEST_IMAGES = [
 const mediaQuery = window.matchMedia('(max-width: 600px)');
 
 debugContainer.style.display = 'none';
-
-orientation.addEventListener('change', (e) => {
-  console.log(e.target.value);
-});
 
 // state vars
 let loadedImages = [];
@@ -43,14 +41,13 @@ const hideCanvasContainer = () => canvasContainer.classList.add('hidden');
 hideCanvasContainer();
 imageListContainer.classList.add('hidden');
 
-// util functions (combine or put in separate files later)
+// util functions
 const loadImageFromFile = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
       img.onload = () => {
-        // Store the original file name as a property on the image object
         img.originalName = file.name;
         resolve(img);
       };
@@ -112,36 +109,25 @@ const loadAndDrawImages = async (files) => {
 
 // Move image up in the order
 const moveImageUp = (index) => {
-  if (index <= 0) return; // Can't move first item up
-
-  // Swap images in the loadedImages array
+  if (index <= 0) return;
   [loadedImages[index], loadedImages[index - 1]] = [
     loadedImages[index - 1],
     loadedImages[index],
   ];
-  // Rebuild the thumbnails to reflect the new order
   imageList.innerHTML = '';
   createImageThumbnails();
-
-  // Redraw canvas with new order
   drawToCanvas();
 };
 
 // Move image down in the order
 const moveImageDown = (index) => {
-  if (index >= loadedImages.length - 1) return; // Can't move last item down
-
-  // Swap images in the loadedImages array
+  if (index >= loadedImages.length - 1) return;
   [loadedImages[index], loadedImages[index + 1]] = [
     loadedImages[index + 1],
     loadedImages[index],
   ];
-
-  // Rebuild the thumbnails to reflect the new order
   imageList.innerHTML = '';
   createImageThumbnails();
-
-  // Redraw canvas with new order
   drawToCanvas();
 };
 
@@ -149,19 +135,13 @@ const moveImageDown = (index) => {
 const createThumbnail = (img, width, height) => {
   const canvasThumbnail = document.createElement('canvas');
   const ctxThumbnail = canvasThumbnail.getContext('2d');
-
-  // Set canvas dimensions to the thumbnail size
   canvasThumbnail.width = width;
   canvasThumbnail.height = height;
-
-  // Draw the image onto the canvas with the new size
   ctxThumbnail.drawImage(img, 0, 0, width, height);
-
-  // Return the data URL of the thumbnail image
-  return canvasThumbnail.toDataURL('image/jpeg', 0.7); // you can adjust the quality here
+  return canvasThumbnail.toDataURL('image/jpeg', 0.7);
 };
 
-// Create draggable thumbnails (updated to use the canvas)
+// Create draggable thumbnails
 const createImageThumbnails = () => {
   imageListContainer.classList.remove('hidden');
 
@@ -171,8 +151,7 @@ const createImageThumbnails = () => {
     thumbnail.draggable = true;
     thumbnail.dataset.index = index;
 
-    // Create the thumbnail using a canvas
-    const thumbnailSrc = createThumbnail(img, 100, 100); // Adjust the size as needed
+    const thumbnailSrc = createThumbnail(img, 100, 100);
 
     const upArrow = document.createElement('button');
     upArrow.className = 'up-arrow';
@@ -180,13 +159,11 @@ const createImageThumbnails = () => {
     if (index === 0) {
       upArrow.disabled = true;
       upArrow.classList.add('disabled');
-    } else if (index > 0) {
+    } else {
       upArrow.disabled = false;
       upArrow.classList.remove('disabled');
     }
-    upArrow.addEventListener('click', () => {
-      moveImageUp(index);
-    });
+    upArrow.addEventListener('click', () => moveImageUp(index));
 
     const downArrow = document.createElement('button');
     downArrow.className = 'down-arrow';
@@ -194,26 +171,19 @@ const createImageThumbnails = () => {
     if (index === loadedImages.length - 1) {
       downArrow.disabled = true;
       downArrow.classList.add('disabled');
-    } else if (index < loadedImages.length - 1) {
+    } else {
       downArrow.disabled = false;
       downArrow.classList.remove('disabled');
     }
-    downArrow.addEventListener('click', () => {
-      moveImageDown(index);
-    });
+    downArrow.addEventListener('click', () => moveImageDown(index));
 
     const previewContainer = document.createElement('div');
     previewContainer.className = 'preview-container';
 
-    // Create an image element for the thumbnail
     const imgPreview = document.createElement('img');
     imgPreview.className = 'thumbnail-img';
-    imgPreview.src = thumbnailSrc; // Use the thumbnail data URL
-
-    // Disable right-click on the thumbnail image
-    imgPreview.addEventListener('contextmenu', (e) => {
-      e.preventDefault(); // This disables the right-click context menu
-    });
+    imgPreview.src = thumbnailSrc;
+    imgPreview.addEventListener('contextmenu', (e) => e.preventDefault());
 
     const imgName = img.originalName || img.src.split('/').pop();
     const label = document.createElement('span');
@@ -233,6 +203,7 @@ const createImageThumbnails = () => {
     thumbnail.addEventListener('dragend', handleDragEnd);
   });
 };
+
 // Drag handlers
 const handleDragStart = (e) => {
   draggedItem = e.target.closest('.image-thumbnail');
@@ -268,46 +239,45 @@ const handleDragEnd = () => {
 
 // Update image order after drag
 const updateImageOrder = () => {
-  // Get new order based on the current DOM arrangement
   const thumbnails = Array.from(imageList.children);
   const newOrder = thumbnails.map(
     (thumb) => loadedImages[parseInt(thumb.dataset.index)]
   );
   loadedImages = newOrder;
 
-  // Update indices and arrow states
   thumbnails.forEach((thumb, index) => {
-    // Update index data attribute
     thumb.dataset.index = index;
-
-    // Get the up and down arrow buttons
     const upArrow = thumb.querySelector('.up-arrow');
     const downArrow = thumb.querySelector('.down-arrow');
 
-    // Update up arrow state
     if (index === 0) {
       upArrow.disabled = true;
       upArrow.classList.add('disabled');
-    } else if (index !== 0) {
+    } else {
       upArrow.disabled = false;
       upArrow.classList.remove('disabled');
     }
 
-    // Update down arrow state
     if (index === loadedImages.length - 1) {
       downArrow.disabled = true;
       downArrow.classList.add('disabled');
-    } else if (index !== loadedImages.length - 1) {
+    } else {
       downArrow.disabled = false;
       downArrow.classList.remove('disabled');
     }
   });
 
-  // Redraw the canvas with the new order
   drawToCanvas();
 };
 
-// Drawing functions
+// --- DRAWING LOGIC ---
+
+// Helper to get either min or max of a specific dimension (width or height)
+const getBaseDimension = (images, dimension) => {
+  const values = images.map((img) => img[dimension]);
+  return checkbox.checked ? Math.max(...values) : Math.min(...values);
+};
+
 const drawToCanvas = () => {
   if (loadedImages.length === 0) {
     hideCanvasContainer();
@@ -316,36 +286,39 @@ const drawToCanvas = () => {
 
   showCanvasContainer();
 
-  const maxWidth = getMaxWidth(loadedImages);
-  const scaleFactors = getScaleFactors(loadedImages, maxWidth);
-  const newHeights = calculateNewHeights(loadedImages, scaleFactors);
+  const isPortrait = orientation.value === 'portrait';
 
-  setCanvasDimensions(maxWidth, newHeights);
-  drawImagesOnCanvas(loadedImages, scaleFactors, maxWidth, newHeights);
-};
+  if (isPortrait) {
+    // Stack vertically based on a unified width
+    const baseWidth = getBaseDimension(loadedImages, 'width');
+    const scaleFactors = loadedImages.map((img) => baseWidth / img.width);
+    const newHeights = loadedImages.map(
+      (img, i) => img.height * scaleFactors[i]
+    );
 
-const getMaxWidth = (images) =>
-  checkbox.checked && orientation.value === 'portrait'
-    ? Math.max(...images.map((img) => img.width))
-    : Math.min(...images.map((img) => img.width));
+    canvas.width = baseWidth;
+    canvas.height = newHeights.reduce((acc, h) => acc + h, 0);
 
-const getScaleFactors = (images, baseWidth) =>
-  images.map((img) => baseWidth / img.width);
+    let yOffset = 0;
+    loadedImages.forEach((img, i) => {
+      ctx.drawImage(img, 0, yOffset, baseWidth, newHeights[i]);
+      yOffset += newHeights[i];
+    });
+  } else {
+    // Stack horizontally based on a unified height
+    const baseHeight = getBaseDimension(loadedImages, 'height');
+    const scaleFactors = loadedImages.map((img) => baseHeight / img.height);
+    const newWidths = loadedImages.map((img, i) => img.width * scaleFactors[i]);
 
-const calculateNewHeights = (images, scaleFactors) =>
-  images.map((img, i) => img.height * scaleFactors[i]);
+    canvas.height = baseHeight;
+    canvas.width = newWidths.reduce((acc, w) => acc + w, 0);
 
-const setCanvasDimensions = (width, heights) => {
-  canvas.width = width;
-  canvas.height = heights.reduce((acc, h) => acc + h, 0);
-};
-
-const drawImagesOnCanvas = (images, scaleFactors, width, heights) => {
-  let yOffset = 0;
-  images.forEach((img, i) => {
-    ctx.drawImage(img, 0, yOffset, width, heights[i]);
-    yOffset += heights[i];
-  });
+    let xOffset = 0;
+    loadedImages.forEach((img, i) => {
+      ctx.drawImage(img, xOffset, 0, newWidths[i], baseHeight);
+      xOffset += newWidths[i];
+    });
+  }
 };
 
 // Download logic
@@ -371,19 +344,19 @@ mediaQuery.addEventListener('change', mediaQueryChange);
 mediaQueryChange(mediaQuery);
 
 uploadInput.removeEventListener('change', handleUpload);
-// Then add the new one
 uploadInput.addEventListener('change', handleUpload);
 
 function handleUpload(e) {
   const files = e.target.files;
   if (files.length) {
     loadAndDrawImages(files);
-    // Clear the input after processing
     e.target.value = '';
   }
 }
 
+// Ensure canvas redraws when configuration changes
 checkbox.addEventListener('change', drawToCanvas);
+orientation.addEventListener('change', drawToCanvas);
 
 downloadButton.addEventListener('click', downloadImage);
 
