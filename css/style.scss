@@ -323,6 +323,7 @@ button {
     flex-shrink: 1; // Allow text to shrink if needed
     text-align: right;
     font-size: 0.8rem;
+    min-width: 0;
   }
 
   &.dragging {
