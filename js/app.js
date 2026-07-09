@@ -27,7 +27,11 @@ const changeOrientation = (event) => {
   } else if (event.target.id === 'landscapeButton') {
     currentOrientation = 'landscape';
   }
-
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'orientation_change', // This is what triggers your GTM tag
+    selected_orientation: currentOrientation, // This is the variable you pass to GA4
+  });
   drawToCanvas();
 };
 
